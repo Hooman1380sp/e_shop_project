@@ -100,3 +100,6 @@ class UserLogoutView(View):
         logout(request)
         print('logout shod')
         return redirect('http://localhost:8000')
+
+class UserRestPasswordView(View):
+    pass
