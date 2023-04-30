@@ -14,3 +14,14 @@ class UserRegisterSerializers(serializers.ModelSerializer):
             'is_active':{'required':False},
             'email_active_code' : {'required':False}
         }
+
+
+class UserForgotPasswordSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email',]
+
+class UserResetPasswordSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['password',]

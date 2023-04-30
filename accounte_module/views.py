@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib.auth import get_user_model # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
-from .serializers import UserRegisterSerializers
+from .serializers import UserRegisterSerializers,UserForgotPasswordSerializers,UserResetPasswordSerializers
 from rest_framework.views import APIView
 from django.http import HttpRequest, Http404,HttpResponseNotFound
 from rest_framework_simplejwt.tokens import RefreshToken #برای درست کردن توکن jwt قبل از ریجیستر
@@ -22,7 +22,7 @@ def get_token_for_user(user):
         'refresh' : str(refresh),
         'access' : str(refresh.access_token),
     }
-User =get_user_model() # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
+User = get_user_model() # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
 
 class UserRegisterView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly,]
@@ -101,5 +101,48 @@ class UserLogoutView(View):
         print('logout shod')
         return redirect('http://localhost:8000')
 
-class UserRestPasswordView(View):
-    pass
+class UserForgotPasswordView(APIView):
+    def post(self,request:HttpRequest):
+        ser_data = UserForgotPasswordSerializers(data=request.POST)
+        if ser_data.is_valid():
+            user_email = ser_data.validated_data.get('email')
+            user = User.objects.filter(email__iexact=user_email).first()
+            print(user.username)
+            print(user.email)
+            print(user.pk)
+            if user is not None:
+                random_str = user.email_active_code
+                EMAIL_HOST_PASSWORD = 'qjvhrbqewwvqxmxp'
+                EMAIL_HOST = 'smtp.gmail.com'
+                EMAIL_HOST_USER = 'testingmyworksdjango@gmail.com'
+                EMAIL_PORT_SSL = 465
+                msg = EmailMessage()
+                msg['Subject'] = 'reset password account'
+                msg['Form'] = EMAIL_HOST_USER
+                msg['To'] = user_email
+                msg.set_content(f'http://localhost:8000/account/reset-pass/{random_str}')
+                with smtplib.SMTP_SSL(EMAIL_HOST, EMAIL_PORT_SSL) as server:
+                    server.login(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
+                    server.send_message(msg)
+                    return Response(data=ser_data.data,status=status.HTTP_202_ACCEPTED)
+            return Response({'message': 'ایمیل وارد شده, قبلا ثبت نام نکرده است '},status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response({'message': 'در وارد کردن اطلاعات خود دقت کنید' },status=status.HTTP_400_BAD_REQUEST)
+
+class UserResetPasswordView(APIView):
+    def put(self,request:HttpRequest,active_code):
+        user : User = User.objects.filter(email_active_code__iexact=active_code).first()
+        if user is not None:
+            ser_data = UserResetPasswordSerializers(instance=user,data=request.POST,partial=True)
+            if ser_data.is_valid():
+                # ser_data.save() # این روش غیر امنیتی هست
+                user_password = ser_data.validated_data.get('password')
+                user.set_password(user_password)
+                user.is_active = True
+                user.email_active_code = get_random_string(84)
+                user.save()
+                return Response(data=ser_data.data,status=status.HTTP_202_ACCEPTED)
+            return Response({'message': 'در وارد کردن اطلاعات خود دقت کنید'},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'کاربری با همچنین ایمیلی ثبت نشده است'},status=status.HTTP_404_NOT_FOUND)
+    # def put(self,request:HttpRequest):
+    #     ser_date = UserRegisterSerializers(data=request.POST,partial=True)
+
