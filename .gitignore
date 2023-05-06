@@ -173,4 +173,4 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
 
-requirements.txt
+e_shop_project/settings.py
