@@ -146,3 +146,4 @@ class UserResetPasswordView(APIView):
     # def put(self,request:HttpRequest):
     #     ser_date = UserRegisterSerializers(data=request.POST,partial=True)
 
+

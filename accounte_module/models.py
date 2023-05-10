@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     phone_number = models.CharField(max_length=20)
     email_active_code = models.CharField(max_length=100)
-    Address = models.TextField(null=True)
+    Address = models.TextField(null=True,blank=True)
 
     def __str__(self):
         if self.first_name is not '' and self.last_name is not '':
