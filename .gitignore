@@ -175,4 +175,4 @@ cython_debug/
 
 requirements.txt
 
-accounte_module/views.py
+/accounte_module/views.py
