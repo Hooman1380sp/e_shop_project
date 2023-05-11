@@ -173,6 +173,10 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
 
+<<<<<<< HEAD
 requirements.txt
 
 /accounte_module/views.py
+=======
+e_shop_project/settings.py
+>>>>>>> 6d3cdbe4b97ef85dba6e53ebd5bdee0e6cede5d3
