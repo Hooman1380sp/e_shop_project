@@ -107,9 +107,6 @@ class UserForgotPasswordView(APIView):
         if ser_data.is_valid():
             user_email = ser_data.validated_data.get('email')
             user = User.objects.filter(email__iexact=user_email).first()
-            print(user.username)
-            print(user.email)
-            print(user.pk)
             if user is not None:
                 random_str = user.email_active_code
                 EMAIL_HOST_PASSWORD = 'qjvhrbqewwvqxmxp'
