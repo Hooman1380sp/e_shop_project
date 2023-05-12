@@ -5,23 +5,34 @@ from django.contrib.auth import get_user_model # زمانی که یک user جن�
 User = get_user_model() # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
 
 
-class UserRegisterSerializers(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email','password','username','is_active','email_active_code']
-        extra_kwargs = {
-            'username':{'required':False},
-            'is_active':{'required':False},
-            'email_active_code' : {'required':False}
-        }
+        fields = ['email','password']#,'username']
+        # extra_kwargs = {
+        #     'username':{'required':False},
+        # }
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email','password']
 
 
-class UserForgotPasswordSerializers(serializers.ModelSerializer):
+class UserForgotPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email',]
 
-class UserResetPasswordSerializers(serializers.ModelSerializer):
+class UserResetPasswordSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['password',]
+
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    pass
+
+class EditUserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','Address','phone_number']

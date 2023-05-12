@@ -1,15 +1,19 @@
 from django.http import HttpRequest
-from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from contact_module.models import ContactUs,AboutUs
 from .serializers import ContactUsSerializers,AboutUsSerializers
 from accounte_module.models import User
+from rest_framework.throttling import UserRateThrottle,AnonRateThrottle
 # Create your views here.
 
 class ContactUsView(APIView):
-
+    throttle_classes = [UserRateThrottle,AnonRateThrottle]
+    serializer_class = ContactUsSerializers
+    """
+    this is view for send contactus (message)for admin application
+    """
     def post(self,request: HttpRequest):
         ser_data = ContactUsSerializers(data=request.POST)
         if ser_data.is_valid():
@@ -58,6 +62,11 @@ class ContactUsView(APIView):
 
 
 class AboutUsView(APIView):
+    serializer_class = AboutUsSerializers
+    throttle_scope = 'get_request'
+    """
+    this page just for show to user (about_team(we))
+    """
     def get(self,request):
         about_us = AboutUs.objects.filter(is_active=True)
         ser_data = AboutUsSerializers(instance=about_us,many=True)

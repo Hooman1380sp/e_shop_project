@@ -8,11 +8,10 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 # Create your views here.
 
 
-
-
 class ProductListView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly,]
     serializer_class = ProductSerializer
+    throttle_scope = 'get_request'
     """
     for see list product.s
     """
@@ -24,6 +23,7 @@ class ProductListView(APIView):
 class ProductDetailView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly,]
     serializer_class = ProductSerializer
+    throttle_scope = 'get_request'
     """
     for see one product by slug
     """
@@ -37,6 +37,7 @@ class ProductDetailView(APIView):
 class ProductCategoryListView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly,]
     serializer_class = ProductCategorySerializer
+    throttle_scope = 'get_request'
     """
     for see list product category
     """
@@ -49,6 +50,7 @@ class ProductCategoryListView(APIView):
 class ProductCategoryDetailView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly,]
     serializer_class = ProductCategorySerializer
+    throttle_scope = 'get_request'
     """
     for see one product_category.s
     """

@@ -25,6 +25,7 @@ class ContactUs(models.Model):
         verbose_name_plural = 'لیست تماس با ما'
 
 class AboutUs(models.Model):
+
     team_name = models.CharField(max_length=200,db_index=True,verbose_name='نام تیم')
     phone_team = models.PositiveIntegerField(verbose_name='تلفن گروه')
     address = models.TextField(verbose_name='آدرس مجموعه')

@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
-from django.contrib.auth import get_user_model # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
-from .serializers import UserRegisterSerializers,UserForgotPasswordSerializers,UserResetPasswordSerializers
+from django.contrib.auth import get_user_model# زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
+from .permissions import PermissionEditUserProfile
+from .serializers import *
 from rest_framework.views import APIView
 from django.http import HttpRequest, Http404,HttpResponseNotFound
 from rest_framework_simplejwt.tokens import RefreshToken #برای درست کردن توکن jwt قبل از ریجیستر
@@ -25,15 +26,14 @@ def get_token_for_user(user):
 User = get_user_model() # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
 
 class UserRegisterView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly,]
-    serializer_class =UserRegisterSerializers
+    serializer_class = UserRegisterSerializer
     throttle_classes = [UserRateThrottle,AnonRateThrottle]
     """
-    create a new user
+    create a new user (user register page)
     
     """
     def post(self,request:HttpRequest):
-        ser_date = UserRegisterSerializers(data=request.POST)
+        ser_date = UserRegisterSerializer(data=request.POST)
         if ser_date.is_valid():
             user_email = ser_date.validated_data.get('email')
             user_password = ser_date.validated_data.get('password')
@@ -61,7 +61,6 @@ class UserRegisterView(APIView):
                 return Response(data=ser_date.data,status=status.HTTP_201_CREATED)
         return Response(data=ser_date.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
 
-
 class ActivateAccountView(View):
     def get(self,request,email_active_code):
         user : User = User.objects.filter(email_active_code__iexact = email_active_code).first()
@@ -73,10 +72,14 @@ class ActivateAccountView(View):
                 return redirect('http://localhost:8000')
         return HttpResponseNotFound('error')
 
-
 class UserLoginView(APIView):
+    serializer_class = UserLoginSerializer
+    throttle_classes = [UserRateThrottle,AnonRateThrottle]
+    """
+    page login view  
+    """
     def post(self,request):
-        ser_data = UserRegisterSerializers(data=request.POST)
+        ser_data = UserLoginSerializer(data=request.POST)
         if ser_data.is_valid():
             user_email = ser_data.validated_data.get('email')
             user_password = ser_data.validated_data.get('password')
@@ -102,8 +105,13 @@ class UserLogoutView(View):
         return redirect('http://localhost:8000')
 
 class UserForgotPasswordView(APIView):
+    throttle_classes = [UserRateThrottle,AnonRateThrottle]
+    serializer_class = UserForgotPasswordSerializer
+    """
+    page forget password
+    """
     def post(self,request:HttpRequest):
-        ser_data = UserForgotPasswordSerializers(data=request.POST)
+        ser_data = UserForgotPasswordSerializer(data=request.POST)
         if ser_data.is_valid():
             user_email = ser_data.validated_data.get('email')
             user = User.objects.filter(email__iexact=user_email).first()
@@ -126,10 +134,15 @@ class UserForgotPasswordView(APIView):
         return Response({'message': 'در وارد کردن اطلاعات خود دقت کنید' },status=status.HTTP_400_BAD_REQUEST)
 
 class UserResetPasswordView(APIView):
+    serializer_class = UserResetPasswordSerializer
+    throttle_classes = [UserRateThrottle,AnonRateThrottle]
+    """
+    page reset password!
+    """
     def put(self,request:HttpRequest,active_code):
         user : User = User.objects.filter(email_active_code__iexact=active_code).first()
         if user is not None:
-            ser_data = UserResetPasswordSerializers(instance=user,data=request.POST,partial=True)
+            ser_data = UserResetPasswordSerializer(instance=user,data=request.POST,partial=True)
             if ser_data.is_valid():
                 # ser_data.save() # این روش غیر امنیتی هست
                 user_password = ser_data.validated_data.get('password')
@@ -143,4 +156,24 @@ class UserResetPasswordView(APIView):
     # def put(self,request:HttpRequest):
     #     ser_date = UserRegisterSerializers(data=request.POST,partial=True)
 
+class EditUserProfileView(APIView):
+    serializer_class = EditUserProfileSerializer
+    throttle_classes = [AnonRateThrottle,UserRateThrottle]
+    permission_classes = [PermissionEditUserProfile,]
+    """
+    this page for edit profile
 
+    """
+    def put(self,request: HttpRequest):
+        current_user: User = User.objects.filter(id=request.user.id).first()
+        self.check_object_permissions(request, current_user)
+        ser_data = EditUserProfileSerializer(instance=current_user,data=request.POST,partial=True)
+        if ser_data.is_valid():
+            print(ser_data.validated_data.get('first_name'),' ',
+                  ser_data.validated_data.get('last_name'),' ',
+                  ser_data.validated_data.get('phone_number'),' ',
+                  ser_data.validated_data.get('Address')
+                  )
+            ser_data.save()
+            return Response(data=ser_data.data,status=status.HTTP_206_PARTIAL_CONTENT)
+        return Response(ser_data.errors,status=status.HTTP_409_CONFLICT)

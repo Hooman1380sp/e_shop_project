@@ -161,16 +161,16 @@ REST_FRAMEWORK = {
     # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', #swagger ui setting
 
 # thorttling برای کنترل درخواست هاس تعداد و زمان
-#     'DEFAULT_THROTTLE_CLASSES': [
-#         'rest_framework.throttling.AnonRateThrottle',
-#         'rest_framework.throttling.UserRateThrottle',
-#         'rest_framework.throttling.ScopedRateThrottle',
-#     ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
 #این بخش برای زمان و تعداد درخواست ها = (request)
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '30/hour',
-        'user': '40/hour',
-    #     'question': '15/hour',
+        'anon': '40/hour',
+        'user': '50/hour',
+        'get_request': '90/hour',
     }
 }
 
@@ -180,8 +180,8 @@ REST_FRAMEWORK = {
 
 #/تنظیمات JWT/ در اینجا ما به تمام قسمت ها دسترسی داریم!
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=3),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=25),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,
@@ -218,3 +218,11 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+# "refresh":
+# "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4NjA3ODAzNSwiaWF0IjoxNjgzOTE4MDM1LCJqdGkiOiJjN2ZhY2VjYTM3OWE0NDAzYjcyYmVjZmQ2N2E3ZjJhMSIsInVzZXJfaWQiOjE4fQ.9OIxiPJWLiSlvhdhIZQy-B6plgAn4Gw9lOLS8gSeWOI",
+
+# "access":
+# "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg1MjE0MDM1LCJpYXQiOjE2ODM5MTgwMzUsImp0aSI6IjRmZjc5OGI3OWU0YjQyNGU4ZGQ4YjQwNWQ5N2UxZWM2IiwidXNlcl9pZCI6MTh9.IcEm0GU-9iSIL1XNx66Ci8gf1qzWoJke5_udRaGWfc8"
+
+
