@@ -29,8 +29,9 @@ class UserResetPasswordSerializer(serializers.ModelSerializer):
         model = User
         fields = ['password',]
 
-class ChangePasswordSerializer(serializers.ModelSerializer):
-    pass
+class ChangePasswordAccoutSerializer(serializers.Serializer):
+    current_password = serializers.CharField(max_length=22,min_length=5,write_only=True)
+    new_password = serializers.CharField(max_length=22,min_length=5,write_only=True)
 
 class EditUserProfileSerializer(serializers.ModelSerializer):
     class Meta:

@@ -139,10 +139,10 @@ class UserResetPasswordView(APIView):
     """
     page reset password!
     """
-    def put(self,request:HttpRequest,active_code):
+    def post(self,request:HttpRequest,active_code):
         user : User = User.objects.filter(email_active_code__iexact=active_code).first()
         if user is not None:
-            ser_data = UserResetPasswordSerializer(instance=user,data=request.POST,partial=True)
+            ser_data = UserResetPasswordSerializer(instance=user,data=request.POST)
             if ser_data.is_valid():
                 # ser_data.save() # این روش غیر امنیتی هست
                 user_password = ser_data.validated_data.get('password')
@@ -169,11 +169,29 @@ class EditUserProfileView(APIView):
         self.check_object_permissions(request, current_user)
         ser_data = EditUserProfileSerializer(instance=current_user,data=request.POST,partial=True)
         if ser_data.is_valid():
-            print(ser_data.validated_data.get('first_name'),' ',
-                  ser_data.validated_data.get('last_name'),' ',
-                  ser_data.validated_data.get('phone_number'),' ',
-                  ser_data.validated_data.get('Address')
-                  )
             ser_data.save()
             return Response(data=ser_data.data,status=status.HTTP_206_PARTIAL_CONTENT)
         return Response(ser_data.errors,status=status.HTTP_409_CONFLICT)
+
+class ChangePasswordAccountView(APIView):
+    serializer_class = ChangePasswordAccoutSerializer
+    throttle_classes = [AnonRateThrottle,UserRateThrottle]
+    permission_classes = [PermissionEditUserProfile]
+
+    """
+    
+    """
+    def post(self,request:HttpRequest):
+       user: User = User.objects.filter(id=request.user.id).first()
+       ser_data = ChangePasswordAccoutSerializer(data=request.POST)
+       if ser_data.is_valid():
+           current_password = ser_data.validated_data.get('current_password')
+           new_password = ser_data.validated_data.get('new_password')
+           if user.check_password(current_password):
+                print(current_password)
+                print(new_password)
+                user.set_password(new_password)
+                user.save()
+                return Response(data=ser_data.data,status=status.HTTP_202_ACCEPTED)
+           return Response({'message': 'کلمه عبور اشتباه میباشد'},status=status.HTTP_409_CONFLICT)
+       return Response({'message': 'تداخل در انجام عملیات'}, status=status.HTTP_409_CONFLICT)
