@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.contrib.auth import get_user_model
+User = get_user_model()
 # Create your models here.
 
 class ProductCategory(models.Model):
@@ -24,3 +25,15 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.title} - {self.price} --{self.category.title[:90]}'
+
+class ProductVisit(models.Model):
+    product = models.ForeignKey('Product',on_delete=models.CASCADE,verbose_name='محصول')
+    ip = models.CharField(max_length=30,verbose_name='آی پی کاربر')
+    user = models.ForeignKey(to=User,null=True,blank=True,on_delete=models.CASCADE,verbose_name='کاربر')
+
+    def __str__(self):
+        return f'{self.product.title[:50]} - {self.ip}'
+
+    class Meta:
+        verbose_name = 'بازدید محصولات'
+        verbose_name_plural = 'بازدید های محصولات'
