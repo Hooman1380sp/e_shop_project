@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'accounte_module',
     'product_module',
     'contact_module',
+    'cart_module',
     #extrnal app
     'rest_framework',
     'rest_framework_simplejwt', #JWT ui setting
