@@ -7,12 +7,19 @@ from rest_framework.views import APIView
 from rest_framework.throttling import AnonRateThrottle,UserRateThrottle
 from .serializers import AddProductToCartSerializer
 from .models import Cart,CartDetail
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 # Create your views here.
 
 
 class AddProductToCartView(APIView):
-
-
+    class_serializer = AddProductToCartSerializer
+    throttle_classes = [AnonRateThrottle,UserRateThrottle]
+    permission_classes = [IsAuthenticatedOrReadOnly,]
+    """
+    Cart_shop request is post 
+    
+    information: id product send to me with post.request!, and user this api for get request
+    """
     def post(self,request: HttpRequest):
         ser_data = AddProductToCartSerializer(data=request.POST)
         if request.user.is_authenticated:

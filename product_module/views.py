@@ -17,9 +17,13 @@ class ProductListView(APIView):
     """
     for see list product.s
     """
+    def setup(self, request, *args, **kwargs):
+        self.queryset = Product.objects.filter(is_delete=False,is_active=True)
+        super().setup(request, *args, **kwargs)
+        #در زمانی که از این متد استفاده میکنیم (setup)حتما باید سوپر و تمام [request, *args, **kwargs]فراخانی کنیم!
+
     def get(self,request):
-        queryset = Product.objects.filter(is_delete=False,is_active=True)
-        ser_data = ProductSerializer(instance=queryset,many=True)
+        ser_data = ProductSerializer(instance=self.queryset,many=True)
         return Response(data=ser_data.data,status=status.HTTP_200_OK)
 
 # about product detail function

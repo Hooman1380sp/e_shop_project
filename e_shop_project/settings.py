@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'accounte_module',
     'product_module',
     'contact_module',
+    'site_module',
     'cart_module',
     #extrnal app
     'rest_framework',
@@ -159,7 +160,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 
-    # 'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', #swagger ui setting
+     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', #swagger ui setting
 
 # thorttling برای کنترل درخواست هاس تعداد و زمان
     'DEFAULT_THROTTLE_CLASSES': [
@@ -175,6 +176,11 @@ REST_FRAMEWORK = {
     }
 }
 
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'e_shop_project',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+}
 
 
 
