@@ -1,13 +1,16 @@
 from django.http import HttpRequest
 from django.shortcuts import render
-from product_module.models import Product
-from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.throttling import AnonRateThrottle,UserRateThrottle
-from .serializers import AddProductToCartSerializer
-from .models import Cart,CartDetail
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+from rest_framework.views import APIView
+
+from product_module.models import Product
+from .models import Cart, CartDetail
+from .serializers import AddProductToCartSerializer
+
+
 # Create your views here.
 
 
