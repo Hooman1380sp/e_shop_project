@@ -60,7 +60,6 @@ class ContactUsView(APIView):
         return Response(data=ser_data.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class AboutUsView(APIView):
     serializer_class = AboutUsSerializers
     throttle_scope = 'get_request'

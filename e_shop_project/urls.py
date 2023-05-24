@@ -24,6 +24,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('product_module.urls')),
+    path('admin-panel/',include('admin_panel.urls')),
     path('site/',include('site_module.urls')),
     path('cart/',include('cart_module.urls')),
     path('account/', include('accounte_module.urls')),

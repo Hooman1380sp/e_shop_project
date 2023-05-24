@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os.path
 from pathlib import Path
-
 from django.conf import settings
 from datetime import timedelta
 
@@ -46,6 +45,7 @@ INSTALLED_APPS = [
     'contact_module',
     'site_module',
     'cart_module',
+    'admin_panel',
     #extrnal app
     'rest_framework',
     'rest_framework_simplejwt', #JWT ui setting
@@ -232,4 +232,5 @@ SIMPLE_JWT = {
 # "access":
 # "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg1MjE0MDM1LCJpYXQiOjE2ODM5MTgwMzUsImp0aSI6IjRmZjc5OGI3OWU0YjQyNGU4ZGQ4YjQwNWQ5N2UxZWM2IiwidXNlcl9pZCI6MTh9.IcEm0GU-9iSIL1XNx66Ci8gf1qzWoJke5_udRaGWfc8"
 
-
+# decorator login required (redirect)
+LOGIN_URL = 'http://127.0.0.1:8000/account/user-login/'

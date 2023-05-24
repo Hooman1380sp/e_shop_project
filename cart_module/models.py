@@ -13,6 +13,18 @@ class Cart(models.Model):
     def __str__(self):
         return str(self.user)
 
+    def calculate_price_whole(self):
+        total_amount = 0
+        if self.is_paid:
+            for cart_detail in self.cartdetail_set.all():
+                total_amount += cart_detail.fainal_price * cart_detail.count
+        else:
+            for cart_detail in self.cartdetail_set.all():
+                total_amount += cart_detail.product.price * cart_detail.count
+
+        return total_amount
+
+
     class Meta:
         verbose_name = 'سبد خرید'
         verbose_name_plural = 'سبد های خرید'
