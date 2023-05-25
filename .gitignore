@@ -185,6 +185,3 @@ e_shop_project/settings.py
 e_shop_project/settings.py
 =======
 requirements.txt
-
-accounte_module/views.py
->>>>>>> 8a1c7c4 (add accounte_modle/views.py in .gitignore)
