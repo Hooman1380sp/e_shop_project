@@ -8,6 +8,7 @@ from accounte_module.models import User
 from rest_framework.throttling import UserRateThrottle,AnonRateThrottle
 # Create your views here.
 
+
 class ContactUsView(APIView):
     throttle_classes = [UserRateThrottle,AnonRateThrottle]
     serializer_class = ContactUsSerializers
