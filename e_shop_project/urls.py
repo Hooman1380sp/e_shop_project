@@ -23,15 +23,17 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('product_module.urls')),
-    path('admin-panel/',include('admin_panel.urls')),
-    path('site/',include('site_module.urls')),
-    path('cart/',include('cart_module.urls')),
-    path('account/', include('accounte_module.urls')),
-    path('contact-us/', include('contact_module.urls')),
+    path('product/', include('product_module.urls', namespace='product')),
+    path('admin-panel/', include('admin_panel.urls', namespace='admin_panel')),
+    path('site/', include('site_module.urls', namespace='site_setting')),
+    path('cart/', include('cart_module.urls', namespace='cart')),
+    path('account/', include('account_module.urls', namespace='account')),
+    path('contact-us/', include('contact_module.urls', namespace='contact_us')),
+    # Jwt token
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # Swagger
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,7 @@
 from rest_framework import routers
 from .views import *
 
+app_name = 'admin_panel'
 urlpatterns = [
 
 ]

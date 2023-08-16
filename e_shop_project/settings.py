@@ -13,22 +13,23 @@ import os.path
 from pathlib import Path
 from django.conf import settings
 from datetime import timedelta
+import os
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
+SECRET_KEY = get_random_secret_key()
+'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DJ_DEBUG", True)
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -39,17 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #internal app
-    'accounte_module',
+    # internal app
+    'account_module',
     'product_module',
     'contact_module',
     'site_module',
     'cart_module',
     'admin_panel',
-    #extrnal app
+    # external app
     'rest_framework',
-    'rest_framework_simplejwt', #JWT ui setting
-    'drf_spectacular', #swagger ui setting
+    'rest_framework_simplejwt',  # JWT ui setting
+    'drf_spectacular',  # swagger ui setting
 ]
 
 MIDDLEWARE = [
@@ -83,19 +84,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'e_shop_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-AUTH_USER_MODEL = 'accounte_module.User'
+AUTH_USER_MODEL = 'account_module.User'
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DB_NAME", "e_shop"),
+        'USER': os.environ.get("DB_USER", "hooman"),
+        'PASSWORD': os.environ.get("DB_PASSWORD", "hooman1380"),
+        'HOST': os.environ.get("DB_HOST", 'localhost'),
+        'PORT': os.environ.get("DB_PORT", '5432'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -115,18 +126,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'fa-ir'#'en-us'
+LANGUAGE_CODE = 'fa-ir'  # 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tehran'
 
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -142,33 +151,20 @@ MEDIA_URL = '/medias/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-#email setting
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'testingmyworksdjango@gmail.com'
-# EMAIL_HOST_PASSWORD = 'cqisokqvcekoyhzl'
-# EMAIL_PORT = 587 # when we use gmail, we must use port 587!
-# EMAIL_USE_TLS = True
-# EMAIL_USE_SSL = False
-
-
-
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 
-     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema', #swagger ui setting
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # swagger ui setting
 
-# thorttling برای کنترل درخواست هاس تعداد و زمان
+    # thorttling برای کنترل درخواست هاس تعداد و زمان
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
         'rest_framework.throttling.ScopedRateThrottle',
     ],
-#این بخش برای زمان و تعداد درخواست ها = (request)
+    # این بخش برای زمان و تعداد درخواست ها = (request)
     'DEFAULT_THROTTLE_RATES': {
         'anon': '40/hour',
         'user': '50/hour',
@@ -182,10 +178,7 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
-
-
-
-#/تنظیمات JWT/ در اینجا ما به تمام قسمت ها دسترسی داریم!
+# /تنظیمات JWT/ در اینجا ما به تمام قسمت ها دسترسی داریم!
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=25),
@@ -226,11 +219,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-# "refresh":
-# "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY4NjA3ODAzNSwiaWF0IjoxNjgzOTE4MDM1LCJqdGkiOiJjN2ZhY2VjYTM3OWE0NDAzYjcyYmVjZmQ2N2E3ZjJhMSIsInVzZXJfaWQiOjE4fQ.9OIxiPJWLiSlvhdhIZQy-B6plgAn4Gw9lOLS8gSeWOI",
-
-# "access":
-# "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg1MjE0MDM1LCJpYXQiOjE2ODM5MTgwMzUsImp0aSI6IjRmZjc5OGI3OWU0YjQyNGU4ZGQ4YjQwNWQ5N2UxZWM2IiwidXNlcl9pZCI6MTh9.IcEm0GU-9iSIL1XNx66Ci8gf1qzWoJke5_udRaGWfc8"
 
 # decorator login required (redirect)
 LOGIN_URL = 'http://127.0.0.1:8000/account/user-login/'

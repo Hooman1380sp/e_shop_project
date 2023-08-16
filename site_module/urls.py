@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import *
 
+app_name = 'site_setting'
 urlpatterns = [
     path('p-l',SiteBannerProductListView.as_view()),
     path('p-d',SiteBannerProductDetailView.as_view()),

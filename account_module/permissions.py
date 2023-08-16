@@ -5,7 +5,7 @@ from rest_framework.permissions import BasePermission, SAFE_METHODS
 class PermissionEditUserProfile(BasePermission):
 
     def has_permission(self, request: HttpRequest, view):
-        return request.user.is_authenticated and request.user
+        return request.user and request.user.is_authenticated
 
     def has_object_permission(self, request: HttpRequest, view, obj):
         if request.method in SAFE_METHODS:

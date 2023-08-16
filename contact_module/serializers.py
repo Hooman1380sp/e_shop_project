@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from contact_module.models import ContactUs,AboutUs
 
+
 class ContactUsSerializers(serializers.ModelSerializer):
     class Meta:
         model = ContactUs

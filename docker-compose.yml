@@ -1,0 +1,34 @@
+version: v2.20.3
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:15.3
+    networks:
+      - main
+    ports:
+       "5432:5432"
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=e_shop
+      - POSTGRES_USER=Hooman
+      - POSTGRES_PASSWORD=hooman1380
+  app:
+    build: .
+    command: sh -c "python manage.py migrate && gunicorn A.wsgi -b 0.0.0.0:8000"
+    container_name: app
+    volumes:
+      - .:/code/
+    depends_on:
+      - postgres
+    expose:
+      - "8000"
+    networks:
+      - main
+    restart: always
+networks:
+  - main
+volumes:
+  - postgres_data
