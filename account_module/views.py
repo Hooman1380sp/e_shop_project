@@ -11,7 +11,14 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken  # برای درست کردن توکن jwt قبل از ریجیستر
 
 from .permissions import PermissionEditUserProfile
-from .serializers import *
+from .serializers import (
+    UserLoginSerializer,
+    UserRegisterSerializer,
+    UserResetPasswordSerializer,
+    UserForgotPasswordSerializer,
+    ChangePasswordAccountSerializer,
+    EditUserProfileSerializer,
+)
 from .utils import SendMail
 
 # Create your views here.
@@ -36,19 +43,18 @@ class UserRegisterView(APIView):
     def post(self, request: HttpRequest):
         ser_date = self.serializer_class(data=request.POST)
         ser_date.is_valid(raise_exception=True)
-        user_email = ser_date.validated_data.get('email')
-        user_password = ser_date.validated_data.get('password')
+        user_email = ser_date.validated_data.get("email")
+        user_password = ser_date.validated_data.get("password")
         user: bool = User.objects.filter(email__iexact=user_email).exists()
         if user:
-            return Response({'error message': 'ایمیل وارد شده تکراری می باشد'},
-                            status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response({"error message": "ایمیل وارد شده تکراری می باشد"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             random_str = get_random_string(84)
             new_user = User(email=user_email, username=user_email, is_active=False, email_active_code=random_str)
             new_user.set_password(user_password)
             # get_token_for_user(new_user)
             new_user.save()
-            address = 'http://localhost:8000/account/activate-account/'
+            address = "http://localhost:8000/account/activate-account/"
             SendMail(user_email, address, random_str)
             return Response(data=ser_date.data, status=status.HTTP_201_CREATED)
         # return Response(data=ser_date.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -59,11 +65,11 @@ class ActivateAccountView(View):
         user: User = User.objects.filter(email_active_code__iexact=email_active_code).first()
         if user is not None:
             user.is_active = True
-            print('activated')
+            print("activated")
             user.email_active_code = get_random_string(84)
             user.save()
-            return redirect('http://localhost:8000')
-        return HttpResponseNotFound('error')
+            return redirect("http://localhost:8000")
+        return HttpResponseNotFound("error")
 
 
 class UserLoginView(APIView):
@@ -76,30 +82,30 @@ class UserLoginView(APIView):
     def post(self, request):
         ser_data = self.serializer_class(data=request.POST)
         ser_data.is_valid(raise_exception=True)
-        user_email = ser_data.validated_data.get('email')
-        user_password = ser_data.validated_data.get('password')
+        user_email = ser_data.validated_data.get("email")
+        user_password = ser_data.validated_data.get("password")
         user: User = User.objects.filter(email=user_email).first()
         if user is not None:
             if not user.is_active:
-                return Response({'message': 'اکانت شما فعال نشده است'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                return Response({"message": "اکانت شما فعال نشده است"}, status=status.HTTP_406_NOT_ACCEPTABLE)
             else:
                 if user_email == user.email:
                     check_password = user.check_password(user_password)
                     if check_password:
                         login(request, user)
                         return Response(ser_data.data, status=status.HTTP_202_ACCEPTED)
-                    return Response({'message': 'کلمه عبور وارد شده اشتباه است'},
-                                    status=status.HTTP_400_BAD_REQUEST)
-                return Response({'message': 'ایمیل وارد شده اشتباه است'}, status=status.HTTP_406_NOT_ACCEPTABLE)
-        return Response({'message': 'کاربری با مشخصات شما یافت نشده است'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+                    return Response({"message": "کلمه عبور وارد شده اشتباه است"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "ایمیل وارد شده اشتباه است"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response({"message": "کاربری با مشخصات شما یافت نشده است"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+
     # return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
-        print('logout shod')
-        return redirect('http://localhost:8000')
+        print("logout shod")
+        return redirect("http://localhost:8000")
 
 
 class UserForgotPasswordView(APIView):
@@ -112,15 +118,14 @@ class UserForgotPasswordView(APIView):
     def post(self, request: HttpRequest):
         ser_data = self.serializer_class(data=request.POST)
         ser_data.is_valid(raise_exception=True)
-        user_email = ser_data.validated_data.get('email')
+        user_email = ser_data.validated_data.get("email")
         user = User.objects.filter(email__iexact=user_email).first()
         if user is not None:
             random_str = user.email_active_code
-            address = 'http://localhost:8000/account/activate-account/'
+            address = "http://localhost:8000/account/activate-account/"
             SendMail(user_email, address, random_str)
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)
-        return Response({'message': 'ایمیل وارد شده, قبلا ثبت نام نکرده است '},
-                        status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response({"message": "ایمیل وارد شده, قبلا ثبت نام نکرده است "}, status=status.HTTP_406_NOT_ACCEPTABLE)
         # return Response({'message': 'در وارد کردن اطلاعات خود دقت کنید'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -137,19 +142,21 @@ class UserResetPasswordView(APIView):
             ser_data = UserResetPasswordSerializer(instance=user, data=request.POST)
             ser_data.is_valid(raise_exception=True)
             # ser_data.save() # این روش غیر امنیتی هست
-            user_password = ser_data.validated_data.get('password')
+            user_password = ser_data.validated_data.get("password")
             user.set_password(user_password)
             user.is_active = True
             user.email_active_code = get_random_string(84)
             user.save()
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)
-        return Response({'message': 'کاربری با همچنین ایمیلی ثبت نشده است'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": "کاربری با همچنین ایمیلی ثبت نشده است"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class EditUserProfileView(APIView):
     serializer_class = EditUserProfileSerializer
     throttle_classes = [AnonRateThrottle, UserRateThrottle]
-    permission_classes = [PermissionEditUserProfile, ]
+    permission_classes = [
+        PermissionEditUserProfile,
+    ]
     """
     this page for edit profile
 
@@ -180,12 +187,12 @@ class ChangePasswordAccountView(APIView):
         user: User = User.objects.filter(id=request.user.id).first()
         ser_data = self.serializer_class(data=request.POST)
         ser_data.is_valid(raise_exception=True)
-        current_password = ser_data.validated_data.get('current_password')
-        new_password = ser_data.validated_data.get('new_password')
+        current_password = ser_data.validated_data.get("current_password")
+        new_password = ser_data.validated_data.get("new_password")
         if user.check_password(current_password):
             print(current_password)
             print(new_password)
             user.set_password(new_password)
             user.save()
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)
-        return Response({'message': 'کلمه عبور اشتباه میباشد'}, status=status.HTTP_409_CONFLICT)
+        return Response({"message": "کلمه عبور اشتباه میباشد"}, status=status.HTTP_409_CONFLICT)

@@ -10,6 +10,8 @@ from rest_framework.views import APIView
 import requests
 import json
 from product_module.models import Product
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 from .models import Cart, CartDetail
 from .serializers import AddProductToCartSerializer,ReceiptOfMyShopSerializer
 
@@ -35,10 +37,10 @@ phone = ''  # Optional
 CallbackURL = 'http://127.0.0.1:8000/cart/verify/'
 
 
-class AddProductToCartView(APIView):
+class AddProductToCartView(LoginRequiredMixin, APIView):
     serializer_class = AddProductToCartSerializer
     throttle_classes = [UserRateThrottle]
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    # permission_classes = [IsAuthenticatedOrReadOnly, ]
     """
     Cart_shop request is post 
     

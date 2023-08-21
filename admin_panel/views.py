@@ -3,6 +3,7 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import get_user_model
+
 User = get_user_model()
 
 from product_module.models import Product, ProductCategory, ProductVisit
@@ -22,7 +23,6 @@ from .serializers import (
     SiteBannerSerializer,
 )
 from .permissions import UserPermission
-
 
 # Create your views here.
 
