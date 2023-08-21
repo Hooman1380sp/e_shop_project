@@ -24,10 +24,10 @@ class Cart(models.Model):
 
         return total_amount
 
-
     class Meta:
         verbose_name = 'سبد خرید'
         verbose_name_plural = 'سبد های خرید'
+
 
 class CartDetail(models.Model):
     cart_shop = models.ForeignKey(to=Cart,on_delete=models.CASCADE,verbose_name='سبد خرید')

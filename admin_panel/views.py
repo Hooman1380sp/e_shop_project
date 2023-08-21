@@ -2,15 +2,26 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import *
-from .permissions import *
 from django.contrib.auth import get_user_model
 User = get_user_model()
-from product_module.models import Product,ProductCategory,ProductVisit
-from contact_module.models import ContactUs,AboutUs
-from site_module.models import SiteBanner
-from cart_module.models import Cart,CartDetail
 
+from product_module.models import Product, ProductCategory, ProductVisit
+from contact_module.models import ContactUs, AboutUs
+from site_module.models import SiteBanner
+from cart_module.models import Cart, CartDetail
+
+from .serializers import (
+    ProductSerializer,
+    ProductCategorySerializer,
+    ProductVisitSerializer,
+    AboutUsSerializer,
+    ContactUsSerializer,
+    CartSerializer,
+    CartDetailSerializer,
+    UserSerializer,
+    SiteBannerSerializer,
+)
+from .permissions import UserPermission
 
 
 # Create your views here.
@@ -18,85 +29,93 @@ from cart_module.models import Cart,CartDetail
 
 class UserViewSet(ViewSet):
     queryset = User.objects.all()
-    permission_classes = [UserPermission,]
+    permission_classes = [
+        UserPermission,
+    ]
+
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
         ser_data = UserSerializer(instance=self.queryset, many=True)
-        return Response(data=ser_data.data,status=status.HTTP_200_OK)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def retrieve(self,request,pk=None):
+    def retrieve(self, request, pk=None):
         user = get_object_or_404(self.queryset, pk=pk)
         self.check_object_permissions(request, self.queryset)
         ser_data = UserSerializer(instance=user)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def create(self,request):
+    def create(self, request):
         self.check_object_permissions(request, self.queryset)
         ser_data = UserSerializer(data=request.POST)
         if ser_data.is_valid():
             ser_data.save()
-            return Response(data=ser_data.data,status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-    def partial_update(self,request,pk=None):
+    def partial_update(self, request, pk=None):
         self.check_object_permissions(request, self.queryset)
         user = get_object_or_404(self.queryset, pk=pk)
-        ser_data = UserSerializer(instance=user,data=request.POST,partial=True)
+        ser_data = UserSerializer(instance=user, data=request.POST, partial=True)
         if ser_data.is_valid():
             ser_data.save()
-            return Response(data=ser_data.data,status=status.HTTP_206_PARTIAL_CONTENT)
-        return Response(data=ser_data.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=ser_data.data, status=status.HTTP_206_PARTIAL_CONTENT)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self,request,pk=None):
+    def destroy(self, request, pk=None):
         self.check_object_permissions(request, self.queryset)
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'},status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ProductViewSet(ViewSet):
     queryset = Product.objects.all()
-    permission_classes = [UserPermission,]
+    permission_classes = [
+        UserPermission,
+    ]
+
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
         ser_data = ProductSerializer(instance=self.queryset, many=True)
-        return Response(data=ser_data.data,status=status.HTTP_200_OK)
+        return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def retrieve(self,request,pk=None):
+    def retrieve(self, request, pk=None):
         user = get_object_or_404(self.queryset, pk=pk)
         self.check_object_permissions(request, self.queryset)
         ser_data = ProductSerializer(instance=user)
         return Response(data=ser_data.data, status=status.HTTP_200_OK)
 
-    def create(self,request):
+    def create(self, request):
         self.check_object_permissions(request, self.queryset)
         ser_data = ProductSerializer(data=request.POST)
         if ser_data.is_valid():
             ser_data.save()
-            return Response(data=ser_data.data,status=status.HTTP_201_CREATED)
-        return Response(data=ser_data.errors,status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
+        return Response(data=ser_data.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
-    def partial_update(self,request,pk=None):
+    def partial_update(self, request, pk=None):
         self.check_object_permissions(request, self.queryset)
         user = get_object_or_404(self.queryset, pk=pk)
-        ser_data = ProductSerializer(instance=user,data=request.POST,partial=True)
+        ser_data = ProductSerializer(instance=user, data=request.POST, partial=True)
         if ser_data.is_valid():
             ser_data.save()
-            return Response(data=ser_data.data,status=status.HTTP_206_PARTIAL_CONTENT)
-        return Response(data=ser_data.errors,status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=ser_data.data, status=status.HTTP_206_PARTIAL_CONTENT)
+        return Response(data=ser_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def destroy(self,request,pk=None):
+    def destroy(self, request, pk=None):
         self.check_object_permissions(request, self.queryset)
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'},status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ProductCategoryViewSet(ViewSet):
     queryset = ProductCategory.objects.all()
-    permission_classes = [UserPermission, ]
+    permission_classes = [
+        UserPermission,
+    ]
 
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
@@ -131,12 +150,14 @@ class ProductCategoryViewSet(ViewSet):
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ProductVisitViewSet(ViewSet):
     queryset = ProductVisit.objects.all()
-    permission_classes = [UserPermission, ]
+    permission_classes = [
+        UserPermission,
+    ]
 
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
@@ -171,12 +192,14 @@ class ProductVisitViewSet(ViewSet):
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class ContactUsViewSet(ViewSet):
     queryset = ContactUs.objects.all()
-    permission_classes = [UserPermission, ]
+    permission_classes = [
+        UserPermission,
+    ]
 
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
@@ -211,12 +234,14 @@ class ContactUsViewSet(ViewSet):
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class AboutUsViewSet(ViewSet):
     queryset = AboutUs.objects.all()
-    permission_classes = [UserPermission, ]
+    permission_classes = [
+        UserPermission,
+    ]
 
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
@@ -251,12 +276,14 @@ class AboutUsViewSet(ViewSet):
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class SiteBannerViewSet(ViewSet):
     queryset = SiteBanner.objects.all()
-    permission_classes = [UserPermission, ]
+    permission_classes = [
+        UserPermission,
+    ]
 
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
@@ -291,12 +318,14 @@ class SiteBannerViewSet(ViewSet):
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class CartViewSet(ViewSet):
     queryset = Cart.objects.all()
-    permission_classes = [UserPermission, ]
+    permission_classes = [
+        UserPermission,
+    ]
 
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
@@ -331,12 +360,14 @@ class CartViewSet(ViewSet):
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)
 
 
 class CartDetailViewSet(ViewSet):
     queryset = CartDetail.objects.all()
-    permission_classes = [UserPermission, ]
+    permission_classes = [
+        UserPermission,
+    ]
 
     def list(self, request):
         self.check_object_permissions(request, self.queryset)
@@ -371,4 +402,4 @@ class CartDetailViewSet(ViewSet):
         user = get_object_or_404(self.queryset, pk=pk)
         user.delete()
         user.save()
-        return Response(data={'message': 'user deactivated'}, status=status.HTTP_204_NO_CONTENT)
+        return Response(data={"message": "user deactivated"}, status=status.HTTP_204_NO_CONTENT)

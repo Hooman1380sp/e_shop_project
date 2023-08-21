@@ -166,9 +166,9 @@ REST_FRAMEWORK = {
     ],
     # این بخش برای زمان و تعداد درخواست ها = (request)
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '40/hour',
-        'user': '50/hour',
-        'get_request': '90/hour',
+        'anon': '20/hour',
+        'user': '30/hour',
+        'get_request': '25/hour',
     }
 }
 

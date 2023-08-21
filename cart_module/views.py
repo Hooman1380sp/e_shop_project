@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
+from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 import requests
 import json
@@ -36,16 +36,16 @@ CallbackURL = 'http://127.0.0.1:8000/cart/verify/'
 
 
 class AddProductToCartView(APIView):
-    class_serializer = AddProductToCartSerializer
-    throttle_classes = [AnonRateThrottle,UserRateThrottle]
-    permission_classes = [IsAuthenticatedOrReadOnly,]
+    serializer_class = AddProductToCartSerializer
+    throttle_classes = [UserRateThrottle]
+    permission_classes = [IsAuthenticatedOrReadOnly, ]
     """
     Cart_shop request is post 
     
     information: id product send to me with post.request!, and user this api for get request
     """
-    def post(self,request: HttpRequest):
-        ser_data = AddProductToCartSerializer(data=request.POST)
+    def post(self, request: HttpRequest):
+        ser_data = self.serializer_class(data=request.POST)
         if request.user.is_authenticated:
             if ser_data.is_valid():
                 count_of_product = ser_data.validated_data.get('count')
@@ -70,8 +70,8 @@ class AddProductToCartView(APIView):
             return Response({'message': 'تداخل در نا کار آمدی درخواست'},status=status.HTTP_408_REQUEST_TIMEOUT)
         return Response({'message': 'برای ثبت سفارش نیاز به ثبت نام است'}, status=status.HTTP_401_UNAUTHORIZED)
 
-class ReceiptOfMyShopView(APIView):
 
+class ReceiptOfMyShopView(APIView):
     def setup(self, request, *args, **kwargs):
         self.query = Cart.objects.filter(is_paid=True, user_id=request.user.id).all()
         super().setup(request, *args, **kwargs)

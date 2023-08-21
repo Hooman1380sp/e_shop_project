@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
+
 class UserPermission(BasePermission):
 
     def has_permission(self, request: HttpRequest, view):

@@ -33,8 +33,6 @@ class ContactUsView(APIView):
                 print('user True')
                 ContactUs(user=user, ip=ip_HTTP_X, title=title, full_name=full_name, email=email, message=message).save()
                 return Response(data=ser_data.data, status=status.HTTP_201_CREATED)
-                # message_contact = ContactUs(ip=ip_HTTP_X,title=title,user=user,full_name=full_name,email=email,message=message)
-                # message_contact.save()
             else:
                 print('user False')
                 ContactUs(ip=ip_HTTP_X, title=title, full_name=full_name, email=email, message=message).save()
