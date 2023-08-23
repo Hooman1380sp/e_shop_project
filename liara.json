@@ -1,3 +1,10 @@
 {
-  "app" : "django-application"
+  "platform": "django",
+  "app": "django-applicatio"
 }
+{
+  "django": {
+    "pythonVersion": "3.10"
+  }
+}
+
