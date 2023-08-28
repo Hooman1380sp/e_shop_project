@@ -6,7 +6,9 @@ User = get_user_model()
 
 # Create your models here.
 
+
 class ProductCategory(models.Model):
+    parent_category = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True, editable=True)
     title = models.CharField(max_length=190)
     slug = models.SlugField(max_length=220, unique=True)
     is_active = models.BooleanField(default=True)
@@ -18,26 +20,26 @@ class ProductCategory(models.Model):
 
 class Product(models.Model):
     title = models.CharField(max_length=190, db_index=True)
-    category = models.ForeignKey(to=ProductCategory, on_delete=models.CASCADE, related_name='product_category')
+    category = models.ForeignKey(to=ProductCategory, on_delete=models.CASCADE, related_name="product_category")
     price = models.IntegerField()
     description = models.TextField()
     slug = models.SlugField(unique=True, max_length=220, blank=False, editable=True)
     is_active = models.BooleanField(default=True)
     is_delete = models.BooleanField()
-    image = models.ImageField(upload_to='product/image')
+    image = models.ImageField(upload_to="product/image")
 
     def __str__(self):
-        return f'{self.title} - {self.price} --{self.category.title[:90]}'
+        return f"{self.title} - {self.price} --{self.category.title[:90]}"
 
 
 class ProductVisit(models.Model):
-    product = models.ForeignKey('Product', on_delete=models.CASCADE, verbose_name='محصول')
-    ip = models.CharField(max_length=30, verbose_name='آی پی کاربر')
-    user = models.ForeignKey(to=User, null=True, blank=True, on_delete=models.CASCADE, verbose_name='کاربر')
+    product = models.ForeignKey("Product", on_delete=models.CASCADE, verbose_name="محصول")
+    ip = models.CharField(max_length=30, verbose_name="آی پی کاربر")
+    user = models.ForeignKey(to=User, null=True, blank=True, on_delete=models.CASCADE, verbose_name="کاربر")
 
     def __str__(self):
-        return f'{self.product.title[:50]} - {self.ip}'
+        return f"{self.product.title[:50]} - {self.ip}"
 
     class Meta:
-        verbose_name = 'بازدید محصولات'
-        verbose_name_plural = 'بازدید های محصولات'
+        verbose_name = "بازدید محصولات"
+        verbose_name_plural = "بازدید های محصولات"
