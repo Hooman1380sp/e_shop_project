@@ -14,8 +14,10 @@ from pathlib import Path
 from django.conf import settings
 from datetime import timedelta
 import os
+from  dotenv import load_dotenv
 from django.core.management.utils import get_random_secret_key
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -34,6 +36,22 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
+LOCAL_APPS = [
+    'account_module',
+    'product_module',
+    'contact_module',
+    'site_module',
+    'cart_module',
+    'admin_panel',
+]
+
+EXTERNAL_APPS = [
+    'rest_framework',
+    'rest_framework_simplejwt',  # JWT ui setting
+    'drf_spectacular',  # swagger ui setting
+]
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,17 +59,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # internal app
-    'account_module',
-    'product_module',
-    'contact_module',
-    'site_module',
-    'cart_module',
-    'admin_panel',
+    * LOCAL_APPS,
     # external app
-    'rest_framework',
-    'rest_framework_simplejwt',  # JWT ui setting
-    'drf_spectacular',  # swagger ui setting
+    * EXTERNAL_APPS,
 ]
 
 MIDDLEWARE = [
