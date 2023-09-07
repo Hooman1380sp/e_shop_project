@@ -1,5 +1,8 @@
 version: v2.20.3
 
+x-environment:
+    DJANGO_SETTINGS_MODULE: 'e_shop_project.settings'
+
 services:
   postgres:
     container_name: postgres
