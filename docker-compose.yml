@@ -4,6 +4,8 @@ services:
   postgres:
     container_name: postgres
     image: postgres:15.3
+    env_file:
+      - .env
     networks:
       - main
     ports:
@@ -28,7 +30,10 @@ services:
     networks:
       - main
     restart: always
+
 networks:
-  - main
+  main:
+    name: main
 volumes:
-  - postgres_data
+  postgres_data:
+    name: postgres_data

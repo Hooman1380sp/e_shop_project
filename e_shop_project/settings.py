@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_random_secret_key()
+SECRET_KEY = os.environ.get('DJ_SECRET_KEY',get_random_secret_key())
 'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -189,15 +189,16 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'e_shop_project',
-    'DESCRIPTION': 'Your project description',
+    'TITLE': 'e shop project',
+    'DESCRIPTION': 'shop project is recently version and big refactor!!',
     'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False
 }
 
 # /تنظیمات JWT/ در اینجا ما به تمام قسمت ها دسترسی داریم!
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=15),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=25),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=3),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=40),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
     "UPDATE_LAST_LOGIN": False,

@@ -17,4 +17,4 @@ RUN pip install -r requirments.txt
 COPY . /code/
 
 # Run server with CMD comand
-CMD ["gunicorn"."A.wsgi",":8000"]
+CMD ["gunicorn","A.wsgi",":8000"]

@@ -5,6 +5,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         exclude = ['is_delete',]
+        # read_only_fields = True
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:

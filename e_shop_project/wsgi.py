@@ -1,5 +1,5 @@
 """
-WSGI config for e_shop_project project.
+WSGI e_shop_project for e_shop_project project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

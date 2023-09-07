@@ -18,22 +18,22 @@ from django.urls import path,include
 from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularAPIView,SpectacularRedocView, SpectacularSwaggerView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('product/', include('product_module.urls', namespace='product')),
-    path('admin-panel/', include('admin_panel.urls', namespace='admin_panel')),
-    path('site/', include('site_module.urls', namespace='site_setting')),
-    path('cart/', include('cart_module.urls', namespace='cart')),
-    path('account/', include('account_module.urls', namespace='account')),
-    path('contact-us/', include('contact_module.urls', namespace='contact_us')),
+    path('api/product/', include('product_module.urls', namespace='product')),
+    path('api/admin-panel/', include('admin_panel.urls', namespace='admin_panel')),
+    path('api/site/', include('site_module.urls', namespace='site_setting')),
+    path('api/cart/', include('cart_module.urls', namespace='cart')),
+    path('api/account/', include('account_module.urls', namespace='account')),
+    path('api/contact-us/', include('contact_module.urls', namespace='contact_us')),
     # Jwt token
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # Swagger
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('api/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

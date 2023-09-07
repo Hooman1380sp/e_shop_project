@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework.views import APIView
+from drf_spectacular.utils import extend_schema_view, extend_schema
 from rest_framework_simplejwt.tokens import RefreshToken  # برای درست کردن توکن jwt قبل از ریجیستر
 
 from .permissions import PermissionEditUserProfile
@@ -31,7 +32,16 @@ from .utils import SendMail
 #     }
 User = get_user_model()  # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
 
-
+@extend_schema_view(
+    post= extend_schema(
+    responses={
+        201: 'create',
+        400: 'not is valid',
+        406: 'user already is exist',
+    },
+    tags=['Account'],
+    description='to display whole products')
+)
 class UserRegisterView(APIView):
     serializer_class = UserRegisterSerializer
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
@@ -55,12 +65,11 @@ class UserRegisterView(APIView):
             # get_token_for_user(new_user)
             new_user.save()
             address = "http://localhost:8000/account/activate-account/"
-            SendMail(user_email, address, random_str)
+            SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_date.data, status=status.HTTP_201_CREATED)
-        # return Response(data=ser_date.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
 
 
-class ActivateAccountView(View):
+class ActivateAccountView(APIView):
     def get(self, request, email_active_code):
         user: User = User.objects.filter(email_active_code__iexact=email_active_code).first()
         if user is not None:
@@ -68,8 +77,8 @@ class ActivateAccountView(View):
             print("activated")
             user.email_active_code = get_random_string(84)
             user.save()
-            return redirect("http://localhost:8000")
-        return HttpResponseNotFound("error")
+            return Response({"message": "now your accounted is active"}, status=status.HTTP_200_OK)
+        return redirect("http://localhost:8000")
 
 
 class UserLoginView(APIView):
@@ -123,7 +132,7 @@ class UserForgotPasswordView(APIView):
         if user is not None:
             random_str = user.email_active_code
             address = "http://localhost:8000/account/activate-account/"
-            SendMail(user_email, address, random_str)
+            SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)
         return Response({"message": "ایمیل وارد شده, قبلا ثبت نام نکرده است "}, status=status.HTTP_406_NOT_ACCEPTABLE)
         # return Response({'message': 'در وارد کردن اطلاعات خود دقت کنید'}, status=status.HTTP_400_BAD_REQUEST)

@@ -5,12 +5,23 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from drf_spectacular.utils import extend_schema,extend_schema_view
 
 from .utils import get_client_ip
 from .serializers import ProductSerializer, ProductCategorySerializer
 from .models import Product, ProductCategory, ProductVisit
 
 
+extend_schema_view(
+    post= extend_schema(
+    responses={
+        200: 'ok',
+        400: 'bad request',
+        403: 'forbidden',
+    },
+    tags=['Product'],
+    description='to display whole products')
+)
 class ProductListView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     serializer_class = ProductSerializer
