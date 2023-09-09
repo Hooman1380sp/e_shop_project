@@ -16,20 +16,22 @@ from datetime import timedelta
 import os
 from  dotenv import load_dotenv
 from django.core.management.utils import get_random_secret_key
-
 load_dotenv()
+# settings.configure()All
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# os.environ.setdefault("DJANGO_SETTING_MODULE","e_shop_project")
+# settings.configure()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJ_SECRET_KEY')
-'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
+SECRET_KEY = os.environ.get('SECRET_KEY', "django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk")
+#'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJ_DEBUG", True)
+DEBUG = os.environ.get("DJ_DEBUG", False)
 # DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
@@ -116,7 +118,7 @@ DATABASES = {
         'NAME': os.environ.get("DB_NAME", "e_shop"),
         'USER': os.environ.get("DB_USER", "hooman"),
         'PASSWORD': os.environ.get("DB_PASSWORD", "hooman1380"),
-        'HOST': os.environ.get("DB_HOST", 'localhost'),
+        'HOST': os.environ.get("DB_HOST", '127.0.0.1'),
         'PORT': os.environ.get("DB_PORT", '5432'),
     }
 }

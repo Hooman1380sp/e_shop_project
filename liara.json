@@ -1,11 +1,4 @@
 {
   "platform": "django",
-  "app": "django-applicatio"
+  "app": "django-starter"
 }
-
-{
-  "django": {
-    "pythonVersion": "3.10"
-  }
-}
-
