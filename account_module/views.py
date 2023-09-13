@@ -32,15 +32,17 @@ from .utils import SendMail
 #     }
 User = get_user_model()  # زمانی که یک user جنگو سفارشی درست میکنیم باید به این شکل مدل user را معرفی کنیم
 
+
 @extend_schema_view(
-    post= extend_schema(
-    responses={
-        201: 'create',
-        400: 'not is valid',
-        406: 'user already is exist',
-    },
-    tags=['Account'],
-    description='to display whole products')
+    post=extend_schema(
+        responses={
+            201: "create",
+            400: "not is valid",
+            406: "user already is exist",
+        },
+        tags=["Account"],
+        description="to display whole products",
+    )
 )
 class UserRegisterView(APIView):
     serializer_class = UserRegisterSerializer
