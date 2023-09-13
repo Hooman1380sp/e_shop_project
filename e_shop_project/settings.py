@@ -15,7 +15,7 @@ from django.conf import settings
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
-from django.core.management.utils import get_random_secret_key
+# from django.core.management.utils import get_random_secret_key
 
 load_dotenv()
 # settings.configure()All
@@ -28,11 +28,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 #'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJ_DEBUG", False)
+DEBUG = os.environ.get("DJ_DEBUG")
 # DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
@@ -195,10 +195,10 @@ SPECTACULAR_SETTINGS = {
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=3),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=2),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=40),
 }
 
 
 # decorator login required (redirect)
-LOGIN_URL = "http://127.0.0.1:8000/account/user-login/"
+# LOGIN_URL = "/account/user-login/"
