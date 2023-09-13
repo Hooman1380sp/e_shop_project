@@ -10,7 +10,6 @@ djangorestframework-simplejwt==5.2.2
 drf-spectacular==0.26.4
 EasyProcess==1.1
 entrypoint2==1.1
-environ==1.0
 idna==3.4
 inflection==0.5.1
 jeepney==0.8.0
@@ -23,7 +22,6 @@ packaging==23.1
 pathspec==0.11.2
 Pillow==10.0.0
 platformdirs==3.10.0
-psycopg2-binary==2.9.7
 PyGetWindow==0.0.9
 PyJWT==2.8.0
 PyMsgBox==1.0.9
@@ -31,7 +29,6 @@ pyperclip==1.8.2
 PyRect==0.2.0
 pyscreenshot==3.1
 PyScreeze==0.1.29
-python-dotenv==1.0.0
 python3-xlib==0.15
 pytweening==1.0.7
 pytz==2023.3
