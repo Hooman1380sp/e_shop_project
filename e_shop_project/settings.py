@@ -32,7 +32,7 @@ SECRET_KEY = "django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk
 #'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJ_DEBUG")
+DEBUG = False
 # DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
@@ -105,8 +105,11 @@ AUTH_USER_MODEL = "account_module.User"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': "Hoomansp80$default",
+        'HOST': "Hoomansp80.mysql.pythonanywhere-services.com",
+        'USER': "Hoomansp80",
+        'PASSWORD': "pGH3BeA$ULYS$Va",
     }
 }
 
@@ -145,7 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "statics"
+STATIC_ROOT = BASE_DIR / " statics/"
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'statics'
 # ]
