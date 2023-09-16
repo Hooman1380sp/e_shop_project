@@ -12,16 +12,14 @@ from .serializers import ProductSerializer, ProductCategorySerializer
 from .models import Product, ProductCategory, ProductVisit
 
 
-extend_schema_view(
-    post= extend_schema(
+@extend_schema_view(post=extend_schema(
     responses={
         200: 'ok',
         400: 'bad request',
         403: 'forbidden',
     },
     tags=['Product'],
-    description='to display whole products')
-)
+    description='to display whole products'))
 class ProductListView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly, ]
     serializer_class = ProductSerializer

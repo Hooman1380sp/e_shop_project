@@ -1,6 +1,6 @@
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponseNotFound
+from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.views import View
@@ -52,21 +52,20 @@ class UserRegisterView(APIView):
     
     """
 
-    def post(self, request: HttpRequest):
-        ser_date = self.serializer_class(data=request.POST)
+    def post(self, request):
+        ser_date = self.serializer_class(data=request.data)
         ser_date.is_valid(raise_exception=True)
         user_email = ser_date.validated_data.get("email")
         user_password = ser_date.validated_data.get("password")
-        user: bool = User.objects.filter(email__iexact=user_email).exists()
-        if user:
-            return Response({"error message": "ایمیل وارد شده تکراری می باشد"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+        if User.objects.filter(email__iexact=user_email).exists():
+            return Response(data=ser_date.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             random_str = get_random_string(84)
             new_user = User(email=user_email, username=user_email, is_active=False, email_active_code=random_str)
             new_user.set_password(user_password)
             # get_token_for_user(new_user)
             new_user.save()
-            address = "http://localhost:8000/account/activate-account/"
+            address = "https://Hoomansp80.pythonanywhere.com/api/account/activate-account/"
             SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_date.data, status=status.HTTP_201_CREATED)
 
@@ -76,11 +75,10 @@ class ActivateAccountView(APIView):
         user: User = User.objects.filter(email_active_code__iexact=email_active_code).first()
         if user is not None:
             user.is_active = True
-            print("activated")
             user.email_active_code = get_random_string(84)
             user.save()
             return Response({"message": "now your accounted is active"}, status=status.HTTP_200_OK)
-        return redirect("http://localhost:8000")
+        return redirect("https://Hoomansp80.pythonanywhere.com")
 
 
 class UserLoginView(APIView):
@@ -91,7 +89,7 @@ class UserLoginView(APIView):
     """
 
     def post(self, request):
-        ser_data = self.serializer_class(data=request.POST)
+        ser_data = self.serializer_class(data=request.data)
         ser_data.is_valid(raise_exception=True)
         user_email = ser_data.validated_data.get("email")
         user_password = ser_data.validated_data.get("password")
@@ -101,8 +99,7 @@ class UserLoginView(APIView):
                 return Response({"message": "اکانت شما فعال نشده است"}, status=status.HTTP_406_NOT_ACCEPTABLE)
             else:
                 if user_email == user.email:
-                    check_password = user.check_password(user_password)
-                    if check_password:
+                    if user.check_password(user_password):
                         login(request, user)
                         return Response(ser_data.data, status=status.HTTP_202_ACCEPTED)
                     return Response({"message": "کلمه عبور وارد شده اشتباه است"}, status=status.HTTP_400_BAD_REQUEST)
@@ -115,8 +112,7 @@ class UserLoginView(APIView):
 class UserLogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
-        print("logout shod")
-        return redirect("http://localhost:8000")
+        return redirect("https://Hoomansp80.pythonanywhere.com")
 
 
 class UserForgotPasswordView(APIView):
@@ -126,14 +122,14 @@ class UserForgotPasswordView(APIView):
     page forget password
     """
 
-    def post(self, request: HttpRequest):
-        ser_data = self.serializer_class(data=request.POST)
+    def post(self, request):
+        ser_data = self.serializer_class(data=request.data)
         ser_data.is_valid(raise_exception=True)
         user_email = ser_data.validated_data.get("email")
         user = User.objects.filter(email__iexact=user_email).first()
         if user is not None:
             random_str = user.email_active_code
-            address = "http://localhost:8000/account/activate-account/"
+            address = "https://Hoomansp80.pythonanywhere.com/api/account/activate-account/"
             SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)
         return Response({"message": "ایمیل وارد شده, قبلا ثبت نام نکرده است "}, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -147,10 +143,10 @@ class UserResetPasswordView(APIView):
     page reset password!
     """
 
-    def post(self, request: HttpRequest, active_code):
+    def post(self, request, active_code):
         user: User = User.objects.filter(email_active_code__iexact=active_code).first()
         if user is not None:
-            ser_data = UserResetPasswordSerializer(instance=user, data=request.POST)
+            ser_data = UserResetPasswordSerializer(instance=user, data=request.data)
             ser_data.is_valid(raise_exception=True)
             # ser_data.save() # این روش غیر امنیتی هست
             user_password = ser_data.validated_data.get("password")
@@ -173,10 +169,10 @@ class EditUserProfileView(APIView):
 
     """
 
-    def put(self, request: HttpRequest):
+    def put(self, request):
         current_user: User = User.objects.filter(id=request.user.id).first()
         self.check_object_permissions(request, current_user)
-        ser_data = self.serializer_class(instance=current_user, data=request.POST, partial=True)
+        ser_data = self.serializer_class(instance=current_user, data=request.data, partial=True)
         ser_data.is_valid(raise_exception=True)
         ser_data.save()
         return Response(data=ser_data.data, status=status.HTTP_206_PARTIAL_CONTENT)
@@ -194,15 +190,13 @@ class ChangePasswordAccountView(APIView):
     current_password == str
     """
 
-    def post(self, request: HttpRequest):
+    def post(self, request):
         user: User = User.objects.filter(id=request.user.id).first()
-        ser_data = self.serializer_class(data=request.POST)
+        ser_data = self.serializer_class(data=request.data)
         ser_data.is_valid(raise_exception=True)
         current_password = ser_data.validated_data.get("current_password")
         new_password = ser_data.validated_data.get("new_password")
         if user.check_password(current_password):
-            print(current_password)
-            print(new_password)
             user.set_password(new_password)
             user.save()
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)

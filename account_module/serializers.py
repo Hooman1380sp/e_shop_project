@@ -5,19 +5,18 @@ User = get_user_model()
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(max_length=20, min_length=8, write_only=True)
+    confirm_password = serializers.CharField(max_length=20, min_length=8)
 
     class Meta:
         model = User
-        fields = ("email", "password", "confirm_password")
-        extra_kwargs = {
-            "password": {"write_only": True},
-        }
+        fields = ["email", "password", "confirm_password"]
+        # extra_kwargs = {
+        #     "password": {"write_only": True},
+        # }
 
     def validate(self, data):
         if data.get("password") != data.get("confirm_password"):
             raise serializers.ValidationError(detail="password not equal with confirm-password")
-        del data["confirm_password"]
         return data
 
 
