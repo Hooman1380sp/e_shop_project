@@ -148,7 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / " statics/"
+STATIC_ROOT = BASE_DIR / "statics/"
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'statics'
 # ]
@@ -183,7 +183,7 @@ SPECTACULAR_SETTINGS = {
     "TITLE": "e shop project",
     "DESCRIPTION": "shop project is recently version and big refactor!!",
     "VERSION": "1.0.0",
-    "SERVE_INCLUDE_SCHEMA": False,
+    # "SERVE_INCLUDE_SCHEMA": False,
 }
 
 

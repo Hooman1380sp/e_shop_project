@@ -49,16 +49,15 @@ class UserRegisterView(APIView):
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
     """
     create a new user (user register page)
-    
+
     """
 
-    def post(self, request: HttpRequest):
-        ser_date = self.serializer_class(data=request.POST)
+    def post(self, request):
+        ser_date = self.serializer_class(data=request.data)
         ser_date.is_valid(raise_exception=True)
         user_email = ser_date.validated_data.get("email")
         user_password = ser_date.validated_data.get("password")
-        user: bool = User.objects.filter(email__iexact=user_email).exists()
-        if user:
+        if User.objects.filter(email__iexact=user_email).exists():
             return Response({"error message": "ایمیل وارد شده تکراری می باشد"}, status=status.HTTP_406_NOT_ACCEPTABLE)
         else:
             random_str = get_random_string(84)
@@ -66,7 +65,7 @@ class UserRegisterView(APIView):
             new_user.set_password(user_password)
             # get_token_for_user(new_user)
             new_user.save()
-            address = "http://localhost:8000/account/activate-account/"
+            address = "https://www.pythonanywhere.com/api/account/activate-account/"
             SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_date.data, status=status.HTTP_201_CREATED)
 
@@ -80,14 +79,14 @@ class ActivateAccountView(APIView):
             user.email_active_code = get_random_string(84)
             user.save()
             return Response({"message": "now your accounted is active"}, status=status.HTTP_200_OK)
-        return redirect("http://localhost:8000")
+        return redirect("https://www.pythonanywhere.com")
 
 
 class UserLoginView(APIView):
     serializer_class = UserLoginSerializer
     throttle_classes = [UserRateThrottle, AnonRateThrottle]
     """
-    page login view  
+    page login view
     """
 
     def post(self, request):
@@ -115,8 +114,7 @@ class UserLoginView(APIView):
 class UserLogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
-        print("logout shod")
-        return redirect("http://localhost:8000")
+        return redirect("https://www.pythonanywhere.com")
 
 
 class UserForgotPasswordView(APIView):
@@ -133,7 +131,7 @@ class UserForgotPasswordView(APIView):
         user = User.objects.filter(email__iexact=user_email).first()
         if user is not None:
             random_str = user.email_active_code
-            address = "http://localhost:8000/account/activate-account/"
+            address = "https://www.pythonanywhere.com/api/account/activate-account/"
             SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)
         return Response({"message": "ایمیل وارد شده, قبلا ثبت نام نکرده است "}, status=status.HTTP_406_NOT_ACCEPTABLE)
@@ -188,7 +186,7 @@ class ChangePasswordAccountView(APIView):
     permission_classes = [PermissionEditUserProfile]
 
     """
-    change password 
+    change password
     have tow field
     new_password == str
     current_password == str
