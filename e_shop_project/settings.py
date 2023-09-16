@@ -32,7 +32,7 @@ SECRET_KEY = "django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk
 #'django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
@@ -52,6 +52,7 @@ EXTERNAL_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",  # JWT ui setting
     "drf_spectacular",  # swagger ui setting
+    "corsheaders",
 ]
 
 
@@ -67,6 +68,21 @@ INSTALLED_APPS = [
     # external app
     *EXTERNAL_APPS,
 ]
+# Cors headers
+CORS_ALLOWED_ORIGINS = [
+    "https://Hoomansp80.pythonanywhere.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:9000",
+]
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
+CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -76,6 +92,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # external middleware
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = "e_shop_project.urls"
@@ -105,13 +124,20 @@ AUTH_USER_MODEL = "account_module.User"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': "Hoomansp80$default",
-        'HOST': "Hoomansp80.mysql.pythonanywhere-services.com",
-        'USER': "Hoomansp80",
-        'PASSWORD': "pGH3BeA$ULYS$Va",
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': "Hoomansp80$default",
+#         'HOST': "Hoomansp80.mysql.pythonanywhere-services.com",
+#         'USER': "Hoomansp80",
+#         'PASSWORD': "pGH3BeA$ULYS$Va",
+#     }
+# }
 
 
 # Password validation
@@ -147,7 +173,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+<<<<<<< HEAD
 STATIC_URL = "static/"
+=======
+STATIC_URL = "/static/"
+>>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
 STATIC_ROOT = BASE_DIR / "statics/"
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'statics'
