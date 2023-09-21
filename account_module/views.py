@@ -58,22 +58,14 @@ class UserRegisterView(APIView):
         user_email = ser_date.validated_data.get("email")
         user_password = ser_date.validated_data.get("password")
         if User.objects.filter(email__iexact=user_email).exists():
-<<<<<<< HEAD
-            return Response({"error message": "ایمیل وارد شده تکراری می باشد"}, status=status.HTTP_406_NOT_ACCEPTABLE)
-=======
             return Response(data=ser_date.errors, status=status.HTTP_406_NOT_ACCEPTABLE)
->>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
         else:
             random_str = get_random_string(84)
             new_user = User(email=user_email, username=user_email, is_active=False, email_active_code=random_str)
             new_user.set_password(user_password)
             # get_token_for_user(new_user)
             new_user.save()
-<<<<<<< HEAD
-            address = "https://www.pythonanywhere.com/api/account/activate-account/"
-=======
             address = "https://Hoomansp80.pythonanywhere.com/api/account/activate-account/"
->>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
             SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_date.data, status=status.HTTP_201_CREATED)
 
@@ -86,11 +78,7 @@ class ActivateAccountView(APIView):
             user.email_active_code = get_random_string(84)
             user.save()
             return Response({"message": "now your accounted is active"}, status=status.HTTP_200_OK)
-<<<<<<< HEAD
-        return redirect("https://www.pythonanywhere.com")
-=======
         return redirect("https://Hoomansp80.pythonanywhere.com")
->>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
 
 
 class UserLoginView(APIView):
@@ -124,11 +112,7 @@ class UserLoginView(APIView):
 class UserLogoutView(LoginRequiredMixin, View):
     def get(self, request):
         logout(request)
-<<<<<<< HEAD
-        return redirect("https://www.pythonanywhere.com")
-=======
         return redirect("https://Hoomansp80.pythonanywhere.com")
->>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
 
 
 class UserForgotPasswordView(APIView):
@@ -145,11 +129,7 @@ class UserForgotPasswordView(APIView):
         user = User.objects.filter(email__iexact=user_email).first()
         if user is not None:
             random_str = user.email_active_code
-<<<<<<< HEAD
-            address = "https://www.pythonanywhere.com/api/account/activate-account/"
-=======
             address = "https://Hoomansp80.pythonanywhere.com/api/account/activate-account/"
->>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
             SendMail(to=user_email, address=address, random_str=random_str)
             return Response(data=ser_data.data, status=status.HTTP_202_ACCEPTED)
         return Response({"message": "ایمیل وارد شده, قبلا ثبت نام نکرده است "}, status=status.HTTP_406_NOT_ACCEPTABLE)

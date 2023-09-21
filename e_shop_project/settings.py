@@ -13,7 +13,6 @@ import os.path
 from pathlib import Path
 from django.conf import settings
 from datetime import timedelta
-import os
 # from dotenv import load_dotenv
 # from django.core.management.utils import get_random_secret_key
 
@@ -122,22 +121,22 @@ WSGI_APPLICATION = "e_shop_project.wsgi.application"
 
 AUTH_USER_MODEL = "account_module.User"
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': "Hoomansp80$default",
-#         'HOST': "Hoomansp80.mysql.pythonanywhere-services.com",
-#         'USER': "Hoomansp80",
-#         'PASSWORD': "pGH3BeA$ULYS$Va",
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': "Hoomansp80$default",
+        'HOST': "Hoomansp80.mysql.pythonanywhere-services.com",
+        'USER': "Hoomansp80",
+        'PASSWORD': "pGH3BeA$ULYS$Va",
+    }
+}
 
 
 # Password validation
@@ -173,15 +172,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-<<<<<<< HEAD
-STATIC_URL = "static/"
-=======
+
 STATIC_URL = "/static/"
->>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
 STATIC_ROOT = BASE_DIR / "statics/"
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'statics'
-# ]
+STATICFILES_DIRS = [
+    BASE_DIR / 'statics'
+]
 
 MEDIA_ROOT = BASE_DIR / "uploads"
 MEDIA_URL = "/medias/"
