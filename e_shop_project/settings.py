@@ -71,8 +71,8 @@ INSTALLED_APPS = [
 # Cors headers
 CORS_ALLOWED_ORIGINS = [
     "https://Hoomansp80.pythonanywhere.com",
-    "http://localhost:8000",
-    "http://127.0.0.1:9000",
+    "http://localhost:3030",
+    "http://127.0.0.1:8000",
 ]
 CORS_ALLOW_METHODS = (
     "DELETE",
@@ -173,11 +173,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-<<<<<<< HEAD
-STATIC_URL = "static/"
-=======
+
 STATIC_URL = "/static/"
->>>>>>> b94daef51115a9b660a0ffd999e6f2c7641c3873
 STATIC_ROOT = BASE_DIR / "statics/"
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'statics'
