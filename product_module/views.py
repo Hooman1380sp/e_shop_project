@@ -40,7 +40,7 @@ class ProductListView(APIView):
 
 # about product detail function
 class ProductDetailView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly, ]
+    permission_classes = [IsAuthenticatedOrReadOnly,]
     serializer_class = ProductSerializer
     throttle_scope = 'get_request'
     """
@@ -56,9 +56,10 @@ class ProductDetailView(APIView):
         user_id = None
         if self.request.user.is_authenticated:
             user_id = self.request.user.id
-        has_been_visited = ProductVisit.objects.filter(ip__iexact=user_ip, product_id=loaded_product.id).exists()
+        has_been_visited: bool = ProductVisit.objects.filter(ip__iexact=user_ip, product_id=loaded_product.id).exists()
         if not has_been_visited:
-            ProductVisit(ip=user_ip, user_id=user_id, product_id=loaded_product.id).save()
+            ProductVisit.objects.create(ip=user_ip, user_id=user_id, product_id=loaded_product.id)
+            # ProductVisit(ip=user_ip, user_id=user_id, product_id=loaded_product.id).save()
             # new_visit = ProductVisit(ip=user_ip, user_id=user_id, product_id=loaded_product.id)
             # new_visit.save()
         return Response(data=ser_data.data, status=status.HTTP_200_OK)

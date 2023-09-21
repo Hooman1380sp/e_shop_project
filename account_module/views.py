@@ -1,6 +1,5 @@
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest
 from django.shortcuts import redirect
 from django.utils.crypto import get_random_string
 from django.views import View

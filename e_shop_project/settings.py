@@ -32,7 +32,6 @@ SECRET_KEY = "django-insecure-_!ef+fs_esvh64&&ul817030iqh0d)6ox#84f&mp!mcqy)5qxk
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-# DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -70,8 +69,8 @@ INSTALLED_APPS = [
 # Cors headers
 CORS_ALLOWED_ORIGINS = [
     "https://Hoomansp80.pythonanywhere.com",
-    "http://localhost:8000",
-    "http://127.0.0.1:9000",
+    "http://localhost:3030",
+    "http://127.0.0.1:8000",
 ]
 CORS_ALLOW_METHODS = (
     "DELETE",
@@ -174,10 +173,10 @@ USE_TZ = True
 
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "statics/"
-STATICFILES_DIRS = [
-    BASE_DIR / 'statics'
-]
+STATIC_ROOT = BASE_DIR / "assets/"
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static'
+# ]
 
 MEDIA_ROOT = BASE_DIR / "uploads"
 MEDIA_URL = "/medias/"
